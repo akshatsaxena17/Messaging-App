@@ -44,7 +44,7 @@ router.post("/login",async(req,res)=>{
         return res.status(400).send("invalid password")
     }
     const token=jwt.sign({_id:existuser._id},process.env.secret)
-    res.header('auth-token',token)
+    return res.cookie('token',token).send(token)
 })
 router.get("/",(req,res)=>{
     res.send("OK");
