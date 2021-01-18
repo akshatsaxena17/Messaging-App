@@ -1,0 +1,24 @@
+const {error}=registerValidation(req.body);
+    if(error){
+        return res.send(error.details[0].message)
+    }
+    const existuser = await User.findOne({email:req.body.email})
+    if(existuser){
+        return res.status(400).send("email already exist");
+    }
+
+    const salt=await bcrypt.genSalt(10);
+    const hashpass=await bcrypt.hash(req.body.password,salt);
+    const friend=[]
+    const user =new User({
+        name:req.body.name,
+        email:req.body.email,
+        password:hashpass,
+        friends:friend
+    })
+    try{
+        const savedUser=await user.save();
+        res.send(savedUser);
+    }catch(err){
+        res.status(400).send(err);
+    }

@@ -5,6 +5,13 @@ const bcrypt=require('bcryptjs')
 const local=require('localStorage')
 const jwt=require('jsonwebtoken')
 const {registerValidation,loginValidation}=require('./validation')
+
+router.get("/register",(req,res)=>{
+    res.render("../views/register.ejs")
+})
+router.get("/login",(req,res)=>{
+    res.render("../views/login.ejs")
+})
 router.post("/register",async (req,res)=>{
     const {error}=registerValidation(req.body);
     if(error){
@@ -17,14 +24,16 @@ router.post("/register",async (req,res)=>{
 
     const salt=await bcrypt.genSalt(10);
     const hashpass=await bcrypt.hash(req.body.password,salt);
+    const friend=[]
     const user =new User({
         name:req.body.name,
         email:req.body.email,
-        password:hashpass
+        password:hashpass,
+        friends:friend
     })
     try{
         const savedUser=await user.save();
-        res.send(savedUser);
+        res.redirect("/api/login");
     }catch(err){
         res.status(400).send(err);
     }
@@ -44,7 +53,7 @@ router.post("/login",async(req,res)=>{
         return res.status(400).send("invalid password")
     }
     const token=jwt.sign({_id:existuser._id},process.env.secret)
-    return res.cookie('token',token).send(token)
+    return res.cookie('token',token).redirect("/api/profile")
 })
 router.get("/",(req,res)=>{
     res.send("OK");

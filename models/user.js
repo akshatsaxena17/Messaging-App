@@ -20,6 +20,9 @@ const userschema= new mongoose.Schema({
         required:true,
         max:1024,
         min:8
+    },
+    friends:{
+        type:Array
     }
 });
 
