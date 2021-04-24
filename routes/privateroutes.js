@@ -7,13 +7,13 @@ router.get("/profile",verify,async(req,res)=>{
     const userprofile={
         name:user.name,
         email:user.email,
-        msg:"tmkc"
+        msg:"Profile Section"
     }
     res.render("../views/profile.ejs" ,{userprofile})
 })
 router.get("/genlink",verify,async(req,res)=>{
     const user=await User.findOne({_id:req.user._id})
-    const link=`${process.env.base_url}/addfriend/${user._id}`
+    const link=`localhost:3000/api/addfriend/${user._id}`
     return res.send(link)
 })
 router.get("/addfriend/:id",verify,async(req,res)=>{
@@ -25,15 +25,22 @@ router.get("/addfriend/:id",verify,async(req,res)=>{
     me.save();
     res.send({user,me})
 })
-const list=[]
+
+
 router.get("/friendlist",verify,async(req,res)=>{
     const user=await User.findOne({_id:req.user._id})
-    
-    user.friends.forEach(async function (friend){
-        const user=await User.findOne({_id:friend})
-        list.push(user.name)
-        console.log(list[list.length-1])
+    let list=[];
+    var object={
+        friends:[]
+    };
+    console.log(user.friends);
+    list=user.friends;
+    object.friends.push("Bhosda");
+    list.forEach(async(x)=>{
+        const userx=await User.findOne({_id:x})
+        object.friends.push(userx.name);
     })
-    res.send({list})
+    console.log(object.friends.length)
+    res.send({object})
 })
 module.exports=router

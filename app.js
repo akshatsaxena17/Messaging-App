@@ -17,7 +17,7 @@ app.use(bodyparser.urlencoded({extended: true}));
 const connect=require('./mongoose.js');
 connect();
 const authroutes=require('./routes/routes.js')
-const accesscheck=require("./routes/accesscheck.js")
+const accesscheck=require("./routes/privateroutes.js")
 
 
 app.use('/api',authroutes)
